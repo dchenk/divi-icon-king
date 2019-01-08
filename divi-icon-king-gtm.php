@@ -6,7 +6,7 @@
  * Plugin Name:       Divi Icon King
  * Description:       Add almost 2000 icons to the Divi Builder UI from Font Awesome and Material Design. Features a built in filter so you can find the icon you're looking for quickly. Buckle up, buddy.
  * Plugin URI:	      http://divi-icon-plugin.com/
- * Version:           1.6.4
+ * Version:           2.0.0
  * Author:            Alex Brinkman
  * Author URI:        https://greentreemediallc.com
  * Text Domain:       divi-icon-king-gtm
@@ -19,7 +19,7 @@ if ( ! defined( 'WPINC' ) ) :
 endif;
 
 // Constants.
-define( 'DIKG_VERSION', '1.6.4' );
+define( 'DIKG_VERSION', '2.0.0' );
 
 define( 'DIKG_FONTAWESOME_URL', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' );
 define( 'DIKG_MATERIAL_URL', 'https://fonts.googleapis.com/icon?family=Material+Icons' );
@@ -27,7 +27,6 @@ define( 'DIKG_MATERIAL_URL', 'https://fonts.googleapis.com/icon?family=Material+
 define( 'DIKG_OPTIONS_NAME', 'dikg_settings' );
 define( 'DIKG_PLUGIN_SLUG', 'divi-icon-king-gtm' );
 define( 'DIKG_SETTINGS', 'divi_icon_king_gtm_settings' );
-define( 'DIKG_MARKETPLACE', 'emp' );
 
 add_filter( 'plugin_action_links', 'dikg_add_action_plugin', 10, 5 );
 add_filter( 'dikg_filter_front_icon', 'dikg_front_icon_filter' );
@@ -36,10 +35,6 @@ add_filter( 'script_loader_tag', 'dikg_no_rocketscript', 10, 3 ); // No RocketSc
 add_action( 'init', 'dikg_iconsplosion' );
 add_filter( 'body_class', 'dikg_custom_public_class' );
 add_filter( 'admin_body_class', 'dikg_custom_admin_class' );
-
-// Elegant Marketplace EDD Auto Updater.
-if( DIKG_MARKETPLACE === 'emp')
-	add_action( 'admin_init', 'dikg_marketplace_plugin_updater', 0 );
 
 // Admin pages.
 add_action( 'admin_init', 'dikg_setup_sections' );
@@ -62,17 +57,8 @@ function dikg_custom_admin_class( $classes ) {
 	return $classes;
 }
 
-function dikg_marketplace_plugin_updater() {
-	if ( is_admin() ) :
-		define('DIKG_PLUGIN_FILE', __FILE__ );
-		require_once('update/emp_dikg_lic.php');
-	endif;
-}
-
 /**
  * Filter plugin action links.
- *
- * @since    1.0.0
  */
 function dikg_add_action_plugin( $actions, $plugin_file ) {
 	static $plugin;
@@ -80,13 +66,11 @@ function dikg_add_action_plugin( $actions, $plugin_file ) {
 	if ( ! isset( $plugin ) )
 		$plugin = plugin_basename(__FILE__);
 
-	if ($plugin == $plugin_file) :
+	if ($plugin === $plugin_file) :
 
 		$settings = array('settings' => '<a href="options-general.php?page=' . DIKG_SETTINGS . '">' . __('Settings', 'General') . '</a>');
-		$site_link = array('support' => '<a href="http://alexbrinkman.org/product-support/" target="_blank">Support</a>');
 
     	$actions = array_merge($settings, $actions);
-		$actions = array_merge($site_link, $actions);
 
 	endif;
 
@@ -95,8 +79,6 @@ function dikg_add_action_plugin( $actions, $plugin_file ) {
 
 /**
  * Register the admin stylesheet on our settings page.
- *
- * @since    1.4.0
  */
 function dikg_admin_style( $hook ) {
 	if( $hook != 'settings_page_' . DIKG_SETTINGS ) :
@@ -107,96 +89,40 @@ function dikg_admin_style( $hook ) {
 
 /**
  * Register the admin menu.
- *
- * @since    1.0.0
  */
-function dikg_admin_menu()
-{
+function dikg_admin_menu() {
 	add_submenu_page(
-		'options-general.php',		// parent slug
-		'Divi Icon King',			// page title
-		'Divi Icon King',			// menu title
-		'manage_options',			//capability
-		DIKG_SETTINGS,				// slug
-		'dikg_settings_page' 		// callback
+		'options-general.php',
+		'Divi Icon King',
+		'Divi Icon King',
+		'manage_options',
+		DIKG_SETTINGS,
+		'dikg_settings_page'
 	);
 }
 
 /**
  * Generate the admin settings page.
- *
- * @since    1.0.0
  */
-function dikg_settings_page()
-{
-	$license = trim( get_option( 'dikg_license_key' ) );
-	$status = trim( get_option( 'dikg_license_status' ) );
-
+function dikg_settings_page() {
     settings_errors( 'settings_messages' ); ?>
-
 	<div class="wrap">
 		<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
-
 		<section id="post-body" class="metabox-holder columns-2 gtm_plugin_settings__section">
-
 			<form method="post" action="options.php" class="gtm_plugin_settings__form">
-
-				<?php if( DIKG_MARKETPLACE && DIKG_MARKETPLACE === 'emp' ) : ?>
-				<div class="gtm_plugin_settings">
-					<table class="form-table">
-						<tbody>
-							<tr valign="top">
-								<th scope="row" valign="top">
-									<?php _e('License Key'); ?>
-								</th>
-								<td>
-									<input id="dikg_license_key" name="dikg_license_key" type="text" class="regular-text" value="<?php esc_attr_e( $license ); ?>" />
-									<p class="description" for="dikg_license_key"><?php _e('Enter your license key'); ?></p>
-								</td>
-							</tr>
-						<?php if( false !== $license ) { ?>
-							<tr valign="top">
-								<th scope="row" valign="top">
-									<?php _e('Activate License'); ?>
-								</th>
-								<td>
-									<?php if( $status && $status == 'valid' ) { ?>
-										<span class="dikg_license_status dikg_license_status--active"><?php _e('License: Active'); ?></span>
-										<?php wp_nonce_field( 'dikg_nonce', 'dikg_nonce' ); ?>
-										<input type="submit" class="button-secondary" name="dikg_deactivate" value="<?php _e('Deactivate License'); ?>"/>
-									<?php } else {
-										wp_nonce_field( 'dikg_nonce', 'dikg_nonce' ); ?>
-										<input type="submit" class="button-secondary" name="dikg_activate" value="<?php _e('Activate License'); ?>"/>
-									<?php } ?>
-								</td>
-							</tr>
-						<?php } ?>
-						</tbody>
-					</table>
-				</div>
-				<?php // If DIKG_MARKETPLACE END.
-				endif; ?>
-
 				<div class="gtm_plugin_settings">
 					<?php
 					settings_fields( DIKG_SETTINGS );
-          do_settings_sections( DIKG_SETTINGS );
-					submit_button();
-					?>
+					do_settings_sections( DIKG_SETTINGS );
+					submit_button(); ?>
 				</div>
-
 			</form>
 		</section>
-		<footer class="gtm_plugin_settings__footer">
-			<p>Built with <span class="dashicons dashicons-heart"></span> by Alex Brinkman over at Green Tree Media. Have a great day!</p>
-			<p>If this plugin made your life just a little easier, <a href="greentreemediallc.com/twitter" target="_blank">tweet at me</a> and let me know!</p>
-		</footer>
-	</div><!-- /.wrap -->
+	</div>
 	<?php
 }
 
-function dikg_setup_sections()
-{
+function dikg_setup_sections() {
 	add_settings_section( 'divi_icon_king_settings', '', 'dikg_section_callback', DIKG_SETTINGS );
 }
 
@@ -333,8 +259,8 @@ function dikg_field_callback( $arguments )
 	endif;
 
 	// If there is supplemental text
-    if( $supplimental = $arguments['supplemental'] ) :
-        printf( '<p class="description">%s</p>', $supplimental );
+    if( $supplemental = $arguments['supplemental'] ) :
+        printf( '<p class="description">%s</p>', $supplemental );
     endif;
 
 }
@@ -399,12 +325,12 @@ function dikg_iconsplosion()
  */
 function dikg_et_icons( $icons )
 {
-	// Ditch the original icons. Deuces.
+	// Ditch the original icons.
 	$icons = [];
 
-	include( __DIR__ . '/assets/elegantthemes.php' );
+	require( __DIR__ . '/assets/elegantthemes.php' );
 
-	foreach( $icons as $icon ) :
+	foreach( $elegantthemes_icons as $icon ) :
 
 		$icons[] = sprintf('%1$s~|%2$s~|%3$s~|%4$s',
 			$icon['unicode'],
@@ -423,9 +349,9 @@ function dikg_et_icons( $icons )
  */
 function dikg_fontawesome_icons( $icons )
 {
-	include( __DIR__ . '/assets/fontawesome.php' );
+	require( __DIR__ . '/assets/fontawesome.php' );
 
-	foreach( $icons as $icon ) :
+	foreach( $fontawesome_icons as $icon ) :
 		$icons[] = sprintf('%1$s~|%2$s~|%3$s~|%4$s',
 			$icon['unicode'],
 			$icon['name'],
@@ -442,9 +368,9 @@ function dikg_fontawesome_icons( $icons )
  */
 function dikg_material_icons( $icons )
 {
-	include( __DIR__ . '/assets/material.php');
+	require( __DIR__ . '/assets/material.php');
 
-	foreach( $icons as $icon ) :
+	foreach( $material_icons as $icon ) :
 		$icons[] = sprintf('%1$s~|%2$s~|%3$s~|%4$s',
 			$icon['unicode'],
 			$icon['name'],
@@ -529,8 +455,6 @@ endif;
 /**
  * Overwrites the same function in Divi's functions.php file.
  * Handles icon output on the front end.
- *
- * @since    1.0.0
  */
 if ( ! function_exists( 'et_pb_process_font_icon' ) ) :
 function et_pb_process_font_icon( $font_icon, $symbols_function = 'default' )
@@ -566,8 +490,6 @@ function dikg_front_icon_filter( $font_icon )
 
 /**
  * Tell CloudFlare to ignore RocketScripting my script.
- *
- * @since    1.1.0
  */
 function dikg_no_rocketscript( $tag, $handle, $src )
 {
@@ -580,10 +502,7 @@ function dikg_no_rocketscript( $tag, $handle, $src )
 
 /**
  * Checks if a string is valid json
- *
- * @since    1.0.0
  */
-function dikg_is_json( $string )
-{
+function dikg_is_json( $string ) {
    return is_string( $string ) && is_array( json_decode( $string, true ) ) && ( json_last_error() == JSON_ERROR_NONE ) ? true : false;
 }
