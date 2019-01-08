@@ -1,0 +1,83 @@
+.dikg_icon_filter {
+  display:inline-block;
+  max-width: 617px;
+  padding: 3px 0;
+  transition: all ease .3s}
+
+.dikg_icon_filter--closed {display:inline-block}
+.dikg_icon_filter--open,
+.dikg_icon_filter--visible {display: block}
+.dikg_icon_filter--hidden {display:none !important}
+
+.dikg_icon_filter__control_option {
+  display: inline-block;
+  padding: 3px 5px;
+  border: 1px solid;
+  border-color: transparent;
+  border-radius: 3px;
+  transition: all ease .4s;
+  margin-bottom: 5px;}
+
+.dikg_icon_filter__control_option--active {border-color: #6c36b6;color:#6c36b6;}
+.dikg_icon_filter__control_option--active::after {display:none}
+
+.dikg_icon_filter__control_option::after {
+  content: '|';
+  display: inline-block;
+  margin-left: 10px;
+  vertical-align: top;
+}
+
+.dikg_icon_filter__btn {
+border: 1px solid;
+border-color: #eaeaea;
+  border-radius: 3px}
+  
+.dikg_icon_filter__btn,
+.dikg_icon_filter__controls {
+color: #A0A9B2;
+font-size: 13px;
+padding: 3px 6px;
+font-style: italic}
+.dikg_icon_filter__btn::before {
+content:'\e007';
+font-family: 'ETmodules';
+font-size: 1.1em;
+font-style: normal;
+padding-right: 10px;
+vertical-align: middle}
+
+input[type="text"].dikg_icon_filter__input {
+  background-color: #f1f5f9;
+  border: none! important;
+  border-radius: 4px;
+  display: block;
+  font-size: 14px;
+  width: 100%;
+  padding: 8px 12px;
+}
+
+.dikg_icon_filter__input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+color: #A0A9B2;
+font-style: italic}
+.dikg_icon_filter__input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+color: #A0A9B2;
+   opacity: 1;
+   font-style: italic}
+.dikg_icon_filter__input::-moz-placeholder { /* Mozilla Firefox 19+ */
+ color: #A0A9B2;
+ opacity: 1;
+ font-style: italic}
+.dikg_icon_filter__input:-ms-input-placeholder { /* Internet Explorer 10-11 */
+ color: #A0A9B2;
+ font-style: italic}
+.dikg_icon_filter__input::-ms-input-placeholder { /* Microsoft Edge */
+ color: #A0A9B2;
+ font-style: italic}
+
+.dikg_icon_filter__controls {
+margin-top: 10px;
+padding: 10px 0;
+border-top: 1px solid #eaeaea}
+
+.dikg_icon_filter__control_option:hover {cursor:pointer !important}
