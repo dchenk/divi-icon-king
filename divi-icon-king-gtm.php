@@ -64,8 +64,8 @@ function dikg_custom_admin_class( $classes ) {
 
 function dikg_marketplace_plugin_updater() {
 	if ( is_admin() ) :
-		define('DIKG_PLUGIN_FILE', __FILE__ ); 
-		require_once('update/emp_dikg_lic.php'); 
+		define('DIKG_PLUGIN_FILE', __FILE__ );
+		require_once('update/emp_dikg_lic.php');
 	endif;
 }
 
@@ -79,17 +79,17 @@ function dikg_add_action_plugin( $actions, $plugin_file ) {
 
 	if ( ! isset( $plugin ) )
 		$plugin = plugin_basename(__FILE__);
-	
+
 	if ($plugin == $plugin_file) :
 
 		$settings = array('settings' => '<a href="options-general.php?page=' . DIKG_SETTINGS . '">' . __('Settings', 'General') . '</a>');
 		$site_link = array('support' => '<a href="http://alexbrinkman.org/product-support/" target="_blank">Support</a>');
-		
+
     	$actions = array_merge($settings, $actions);
 		$actions = array_merge($site_link, $actions);
-			
+
 	endif;
-		
+
 	return $actions;
 }
 
@@ -118,7 +118,7 @@ function dikg_admin_menu()
 		'Divi Icon King',			// menu title
 		'manage_options',			//capability
 		DIKG_SETTINGS,				// slug
-		'dikg_settings_page' 		// callback 
+		'dikg_settings_page' 		// callback
 	);
 }
 
@@ -131,14 +131,14 @@ function dikg_settings_page()
 {
 	$license = trim( get_option( 'dikg_license_key' ) );
 	$status = trim( get_option( 'dikg_license_status' ) );
-	
+
     settings_errors( 'settings_messages' ); ?>
-	    
+
 	<div class="wrap">
 		<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 
 		<section id="post-body" class="metabox-holder columns-2 gtm_plugin_settings__section">
-		
+
 			<form method="post" action="options.php" class="gtm_plugin_settings__form">
 
 				<?php if( DIKG_MARKETPLACE && DIKG_MARKETPLACE === 'emp' ) : ?>
@@ -179,7 +179,7 @@ function dikg_settings_page()
 
 				<div class="gtm_plugin_settings">
 					<?php
-					settings_fields( DIKG_SETTINGS );    
+					settings_fields( DIKG_SETTINGS );
           do_settings_sections( DIKG_SETTINGS );
 					submit_button();
 					?>
@@ -208,19 +208,19 @@ function dikg_section_callback( $arguments )
 		break;
 	endswitch;
 }
-    
+
 function dikg_setup_fields()
 {
     // Our main setting we'll be saving our settings under.
 	register_setting( DIKG_SETTINGS, DIKG_OPTIONS_NAME );
 	register_setting( DIKG_SETTINGS, 'dikg_license_key' );
-        
+
 	$settings = get_option( DIKG_OPTIONS_NAME );
-	
+
 	$enable_fontawesome = isset( $settings['enable_fontawesome'] ) ? trim( $settings['enable_fontawesome'] ) : false;
 	$enable_material	= isset( $settings['enable_material'] ) ? trim( $settings['enable_material'] ) : false;
 	$load_locally 		= isset( $settings['load_locally'] ) ? trim( $settings['load_locally'] ) : false;
-                    
+
     $fields = array(
 		array(
 	    	'uid' 				=> 'enable_fontawesome',
@@ -260,20 +260,20 @@ function dikg_setup_fields()
 		    'default' 			=> $load_locally
 	    ),
     );
-	   
+
 	foreach( $fields as $field ) :
-	        
+
 	    add_settings_field(
 	        $field['uid'],
-	        $field['label'],          
+	        $field['label'],
 	        'dikg_field_callback',
 	        DIKG_SETTINGS,
 	        $field['section'],
 	        $field
 	    );
-	        
+
 	endforeach;
-    
+
 }
 
 function dikg_field_callback( $arguments )
@@ -283,7 +283,7 @@ function dikg_field_callback( $arguments )
 
 	// Check which type of field we want
     switch( $arguments['type'] ) :
-    	
+
     	case 'checkbox': // If it is a checkbox field
 				if( isset( $arguments['is_toggle'] ) && $arguments['is_toggle'] ) :
 					printf( '<input name="%4$s[%1$s]" id="%1$s" type="%2$s" class="tgl tgl-flat" %3$s /><label class="tgl-btn" for="%1$s"></label>', $arguments['uid'], $arguments['type'], ( ( $value == 'on' ) ? 'checked' : ''), $option_name  );
@@ -291,42 +291,42 @@ function dikg_field_callback( $arguments )
 					printf( '<input name="%4$s[%1$s]" id="%1$s" type="%2$s" %3$s />', $arguments['uid'], $arguments['type'], ( ( $value == 'on' ) ? 'checked' : ''), $option_name );
 				endif;
 			break;
-	        
+
 	    case 'text': // If it is a text field
 		    printf( '<input name="%5$s[%1$s]" id="%1$s" type="%2$s" placeholder="%3$s" value="%4$s" />', $arguments['uid'], $arguments['type'], $arguments['placeholder'], $value, $option_name );
 		break;
-		    
+
 		case 'number': // If it is a number field
 		    printf( '<input name="%5$s[%1$s]" id="%1$s" type="%2$s" placeholder="%3$s" value="%4$s" />', $arguments['uid'], $arguments['type'], $arguments['placeholder'], $value, $option_name );
 		break;
-	        
+
 	    case 'textarea': // If it is a textarea
 		    printf( '<textarea name="%4$s[%1$s]" id="%1$s" placeholder="%2$s" rows="5" cols="50">%3$s</textarea>', $arguments['uid'], $arguments['placeholder'], $value, $option_name );
 		break;
-	        
+
 	    case 'select': // If it is a select dropdown
-		        
+
 		    if( ! empty ( $arguments['options'] ) && is_array( $arguments['options'] ) ) :
-			        
+
 			    $options_markup = '';
-			        
+
 			    foreach( $arguments['options'] as $key => $label ) :
 				    $options_markup .= sprintf( '<option value="%s" %s>%s</option>', $key, selected( $value, $key, false ), $label );
 			    endforeach;
-			        
+
 			    printf( '<select name="%3$s[%1$s]" id="%1$s">%2$s</select>', $arguments['uid'], $options_markup, $option_name );
-		       
+
 		    endif;
-		        
+
 		break;
-		    
+
     endswitch;
 
 	// If there is help text
     if( $helper = $arguments['helper'] ) :
         printf( '<span class="helper"> %s</span>', $helper );
 	endif;
-	
+
 	// If there is a tooltip
 	if( $tooltip = isset( $arguments['tooltip'] ) ? $arguments['tooltip'] : false ) :
 		printf( '<a href="#" class="gtm-tooltip" data-tooltip="%s"><span class="dashicons dashicons-editor-help"></span></a>', $tooltip );
@@ -336,25 +336,25 @@ function dikg_field_callback( $arguments )
     if( $supplimental = $arguments['supplemental'] ) :
         printf( '<p class="description">%s</p>', $supplimental );
     endif;
-    
+
 }
 
 function dikg_plugin_style() {
-	
+
 	$settings = get_option( DIKG_OPTIONS_NAME );
-	
+
 	$enable_fontawesome = isset( $settings['enable_fontawesome'] ) ? trim( $settings['enable_fontawesome'] ) : false;
 	$enable_material	= isset( $settings['enable_material'] ) ? trim( $settings['enable_material'] ) : false;
 	$load_locally 		= isset( $settings['load_locally'] ) ? trim( $settings['load_locally'] ) : false;
-	
+
   if( $enable_fontawesome ) :
 		if( isset( $load_locally ) && $load_locally ) :
 			wp_enqueue_style( DIKG_PLUGIN_SLUG . '-fontawesome', plugin_dir_url( __FILE__ ) . 'vendor/font-awesome/css/font-awesome.min.css', array(), DIKG_VERSION, 'all' );
-		else:	
+		else:
 			wp_enqueue_style( DIKG_PLUGIN_SLUG . '-fontawesome', DIKG_FONTAWESOME_URL, array(), DIKG_VERSION, 'all' );
 		endif;
 	endif;
-	
+
 	if( $enable_material ) :
 		if( isset( $load_locally ) && $load_locally ) :
 			wp_enqueue_style( DIKG_PLUGIN_SLUG . '-material', plugin_dir_url( __FILE__ ) . 'vendor/material/iconfont/material-icons.css', array(), DIKG_VERSION, 'all' );
@@ -362,7 +362,7 @@ function dikg_plugin_style() {
 			wp_enqueue_style( DIKG_PLUGIN_SLUG . '-material', DIKG_MATERIAL_URL, array(), DIKG_VERSION, 'all' );
 		endif;
 	endif;
-	
+
 	// Load our custom stylesheet
 	wp_enqueue_style( DIKG_PLUGIN_SLUG . '-custom',  plugin_dir_url( __FILE__ ) . 'assets/' . DIKG_PLUGIN_SLUG . '.css', array(), DIKG_VERSION, 'all' );
 
@@ -370,7 +370,7 @@ function dikg_plugin_style() {
 		wp_enqueue_script( DIKG_PLUGIN_SLUG . '-icon-filter', plugin_dir_url( __FILE__ ) . 'assets/divi-icon-king-gtm-icon-search.js', array( 'jquery' ), DIKG_VERSION, true );
 		wp_enqueue_style( DIKG_PLUGIN_SLUG . '-icon-filter', plugin_dir_url( __FILE__ ) . 'assets/divi-icon-king-gtm-icon-search.css', array(), DIKG_VERSION, 'all' );
 	endif;
-	
+
 	wp_enqueue_script( DIKG_PLUGIN_SLUG . '-script',  plugin_dir_url( __FILE__ ) . 'assets/' . DIKG_PLUGIN_SLUG . '.js', array(), DIKG_VERSION . time(), true );
 	add_filter( 'script_loader_tag', 'dikg_no_rocketscript', 10, 3 ); // No RocketScript
 }
@@ -378,17 +378,17 @@ function dikg_plugin_style() {
 function dikg_iconsplosion()
 {
 	$settings = get_option( DIKG_OPTIONS_NAME );
-	
+
 	$enable_fontawesome = isset( $settings['enable_fontawesome'] ) ? trim( $settings['enable_fontawesome'] ) : false;
 	$enable_material	= isset( $settings['enable_material'] ) ? trim( $settings['enable_material'] ) : false;
-	
+
 	// Add new structured ET icons to the divi builder so we can filter them.
 	add_filter('et_pb_font_icon_symbols', 'dikg_et_icons', 20 );
 
 	if( $enable_fontawesome ) :
 	  add_filter('et_pb_font_icon_symbols', 'dikg_fontawesome_icons', 25 );
 	endif;
-	
+
 	if( $enable_material ) :
 		add_filter('et_pb_font_icon_symbols', 'dikg_material_icons', 30);
 	endif;
@@ -396,17 +396,15 @@ function dikg_iconsplosion()
 
 /**
  * Add structured ET icons to Divi.
- *
- * @since    1.0.0
  */
 function dikg_et_icons( $icons )
-{			
+{
 	// Ditch the original icons. Deuces.
-	$icons = array();
-	
-	include( plugin_dir_path( __FILE__ ) . 'assets/elegantthemes.php' );
-	
-	foreach( $elegantthemes_icons as $icon ) :
+	$icons = [];
+
+	include( __DIR__ . '/assets/elegantthemes.php' );
+
+	foreach( $icons as $icon ) :
 
 		$icons[] = sprintf('%1$s~|%2$s~|%3$s~|%4$s',
 			$icon['unicode'],
@@ -419,17 +417,15 @@ function dikg_et_icons( $icons )
 
 	return $icons;
 }
-		
+
 /**
  * Add Font Awesome icons to Divi.
- *
- * @since    1.0.0
  */
 function dikg_fontawesome_icons( $icons )
-{	
-	include( plugin_dir_path( __FILE__ ) . 'assets/fontawesome.php' );
-	
-	foreach( $fontawesome_icons as $icon ) :
+{
+	include( __DIR__ . '/assets/fontawesome.php' );
+
+	foreach( $icons as $icon ) :
 		$icons[] = sprintf('%1$s~|%2$s~|%3$s~|%4$s',
 			$icon['unicode'],
 			$icon['name'],
@@ -437,20 +433,18 @@ function dikg_fontawesome_icons( $icons )
 			$icon['style']
 		);
 	endforeach;
-			
+
     return $icons;
 }
 
 /**
  * Add Material icons to Divi.
- *
- * @since    1.0.0
  */
 function dikg_material_icons( $icons )
-{	
-	include( plugin_dir_path( __FILE__ ) . 'assets/material.php');
-	
-	foreach( $material_icons as $icon ) :
+{
+	include( __DIR__ . '/assets/material.php');
+
+	foreach( $icons as $icon ) :
 		$icons[] = sprintf('%1$s~|%2$s~|%3$s~|%4$s',
 			$icon['unicode'],
 			$icon['name'],
@@ -458,40 +452,38 @@ function dikg_material_icons( $icons )
 			$icon['style']
 		);
 	endforeach;
-	
+
   return $icons;
 }
 
 /**
- * Overwrites the same function in Divi's functions.php file. 
- * Identify the new icons in the divi builder so we can handle 
+ * Overwrites the same function in Divi's functions.php file.
+ * Identify the new icons in the divi builder so we can handle
  * them accordingly.
- *
- * @since 1.0.0
  */
 if ( ! function_exists( 'et_pb_get_font_icon_list_items' ) ) :
-	
+
 	function et_pb_get_font_icon_list_items()
 	{
 		$output = '';
-			
+
 		$symbols = et_pb_get_font_icon_symbols();
 
 		$filter_triggers = array();
-				 																	
+
 		foreach ( $symbols as $symbol ) :
 
 			$icon_data = explode( '~|', $symbol );
-	
+
 			if( count($icon_data) > 1 ) :
-				
+
 				// Only ET icons in the customizer.
 				if ( is_customize_preview() ) :
 					if( $icon_data[2] !== 'elegant-themes') :
 						continue;
 					endif;
 				endif;
-	
+
 				if(! in_array(esc_attr($icon_data[2]), $filter_triggers) )
 					$filter_triggers[] = $icon_data[2];
 
@@ -500,10 +492,10 @@ if ( ! function_exists( 'et_pb_get_font_icon_list_items' ) ) :
 					$icon_data[1],
 					$icon_data[0],
 					$icon_data[2]
-				);			
+				);
 
 			else :
-				$output .= sprintf( '<li data-icon=\'%1$s\' data-family=\'elegant-themes\' class=\'divi-icon-king-gtm divi-icon-king-gtm--elegant-themes\'></li>', esc_attr( $symbol ) );	
+				$output .= sprintf( '<li data-icon=\'%1$s\' data-family=\'elegant-themes\' class=\'divi-icon-king-gtm divi-icon-king-gtm--elegant-themes\'></li>', esc_attr( $symbol ) );
 			endif;
 
 		endforeach;
@@ -513,10 +505,10 @@ if ( ! function_exists( 'et_pb_get_font_icon_list_items' ) ) :
 			<div class="dikg_icon_filter dikg_icon_filter--closed">
 			<span class="dikg_icon_filter__btn dikg_icon_filter--visible">Filter Icons</span>
 			<div class="dikg_icon_filter__controls dikg_icon_filter--hidden">';
-				
+
 				if( $filter_triggers ) :
 					foreach( $filter_triggers as $trigger ) :
-						$output .= 
+						$output .=
 						sprintf(
 							'<span class="dikg_icon_filter__control_option dikg_icon_filter__control_option--inactive dikg_icon_filter__control_family" data-value="%1$s">%1$s</span>',
 							$trigger
@@ -535,7 +527,7 @@ if ( ! function_exists( 'et_pb_get_font_icon_list_items' ) ) :
 endif;
 
 /**
- * Overwrites the same function in Divi's functions.php file. 
+ * Overwrites the same function in Divi's functions.php file.
  * Handles icon output on the front end.
  *
  * @since    1.0.0
@@ -552,7 +544,7 @@ function et_pb_process_font_icon( $font_icon, $symbols_function = 'default' )
 	$icon_index   = (int) str_replace( '%', '', $font_icon );
 	$icon_symbols = 'default' === $symbols_function ? et_pb_get_font_icon_symbols() : call_user_func( $symbols_function );
 	$font_icon    = isset( $icon_symbols[ $icon_index ] ) ? $icon_symbols[ $icon_index ] : '';
-	
+
 	// This is the only alteration to this function.
 	$font_icon = apply_filters( 'dikg_filter_front_icon', $font_icon );
 
@@ -566,9 +558,9 @@ function dikg_front_icon_filter( $font_icon )
 		$icon = json_decode( $font_icon, true );
 		$icon = $icon['family'] . '-' . $icon['unicode'];
 	else :
-		$icon = $font_icon;	
+		$icon = $font_icon;
 	endif;
-		
+
 	return $icon;
 }
 
@@ -582,7 +574,7 @@ function dikg_no_rocketscript( $tag, $handle, $src )
     if ( DIKG_PLUGIN_SLUG . '-script' === $handle )  :
         $tag = '<script data-cfasync="false" src="' . esc_url( $src ) . '" ></script>';
     endif;
-    
+
     return $tag;
 }
 
