@@ -1,24 +1,21 @@
 <?php
 /**
- * @link              https://greentreemediallc.com
- * @since             1.0.0
- * @wordpress-plugin
- * Plugin Name:       Divi Icon King
- * Description:       Add almost 2000 icons to the Divi Builder UI from Font Awesome and Material Design. Features a built in filter so you can find the icon you're looking for quickly. Buckle up, buddy.
- * Plugin URI:	      http://divi-icon-plugin.com/
- * Version:           2.0.0
- * Author:            Alex Brinkman
- * Author URI:        https://greentreemediallc.com
- * Text Domain:       divi-icon-king-gtm
- * Domain Path:       /languages
+ * Plugin Name: Divi Icon King
+ * Description: Add almost 2000 icons to the Divi Builder UI from Font Awesome and Material Design. Features a built in filter so you can find the icon you're looking for quickly. Buckle up, buddy.
+ * Plugin URI:  https://github.com/dchenk/divi-icon-king-gtm
+ * Version:     2.1.0
+ * Author:      Alex Brinkman and Wider Webs
+ * Author URI:  https://greentreemediallc.com
+ * Text Domain: divi-icon-king-gtm
+ * Domain Path: /languages
  */
 
 // If this file is called directly, abort.
-if (! defined('WPINC')) {
+if (!defined('WPINC')) {
 	die;
 }
 
-define('DIKG_VERSION', '2.0.0');
+define('DIKG_VERSION', '2.1.0');
 
 define('DIKG_FONTAWESOME_URL', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 define('DIKG_MATERIAL_URL', 'https://fonts.googleapis.com/icon?family=Material+Icons');
@@ -62,7 +59,7 @@ function dikg_custom_admin_class($classes) {
 function dikg_add_action_plugin($actions, $plugin_file) {
 	static $plugin;
 
-	if (! isset($plugin)) {
+	if (!isset($plugin)) {
 		$plugin = plugin_basename(__FILE__);
 	}
 
@@ -77,12 +74,12 @@ function dikg_add_action_plugin($actions, $plugin_file) {
 
 /**
  * Register the admin stylesheet on our settings page.
+ * @param string $hook
  */
 function dikg_admin_style($hook) {
-	if ($hook != 'settings_page_' . DIKG_SETTINGS) {
-		return;
+	if ($hook === 'settings_page_' . DIKG_SETTINGS) {
+		wp_enqueue_style(DIKG_PLUGIN_SLUG . 'admin', plugin_dir_url(__FILE__) . 'assets/' . DIKG_PLUGIN_SLUG . '-admin.css', [], DIKG_VERSION);
 	}
-	wp_enqueue_style(DIKG_PLUGIN_SLUG . 'admin', plugin_dir_url(__FILE__) . 'assets/' . DIKG_PLUGIN_SLUG . '-admin.css', [], DIKG_VERSION, 'all');
 }
 
 /**
@@ -92,7 +89,7 @@ function dikg_admin_menu() {
 	add_submenu_page(
 		'options-general.php',
 		'Divi Icon King',
-		'Divi Icon King',
+		'Divi Icons',
 		'manage_options',
 		DIKG_SETTINGS,
 		'dikg_settings_page'
@@ -100,20 +97,17 @@ function dikg_admin_menu() {
 }
 
 /**
- * Generate the admin settings page.
+ * Output the admin settings page.
  */
 function dikg_settings_page() {
 	settings_errors('settings_messages'); ?>
 	<div class="wrap">
 		<h1><?php echo esc_html(get_admin_page_title()); ?></h1>
 		<section id="post-body" class="metabox-holder columns-2 gtm_plugin_settings__section">
-			<form method="post" action="options.php" class="gtm_plugin_settings__form">
-				<div class="gtm_plugin_settings">
-					<?php
-					settings_fields(DIKG_SETTINGS);
-	do_settings_sections(DIKG_SETTINGS);
-	submit_button(); ?>
-				</div>
+			<form method="post" action="options.php" id="gtm_plugin_settings">
+				<?php settings_fields(DIKG_SETTINGS); ?>
+				<?php do_settings_sections(DIKG_SETTINGS); ?>
+				<?php submit_button(); ?>
 			</form>
 		</section>
 	</div>
@@ -133,15 +127,13 @@ function dikg_section_callback($arguments) {
 }
 
 function dikg_setup_fields() {
-	// Our main setting we'll be saving our settings under.
 	register_setting(DIKG_SETTINGS, DIKG_OPTIONS_NAME);
-	register_setting(DIKG_SETTINGS, 'dikg_license_key');
 
-	$settings = get_option(DIKG_OPTIONS_NAME);
+	$settings = get_option(DIKG_OPTIONS_NAME, []);
 
-	$enable_fontawesome = isset($settings['enable_fontawesome']) ? trim($settings['enable_fontawesome']) : false;
-	$enable_material	= isset($settings['enable_material']) ? trim($settings['enable_material']) : false;
-	$load_locally 		= isset($settings['load_locally']) ? trim($settings['load_locally']) : false;
+	$enable_fontawesome = !empty($settings['enable_fontawesome']);
+	$enable_material = !empty($settings['enable_material']);
+	$load_external_cdn = !empty($settings['load_external_cdn']);
 
 	$fields = [
 		[
@@ -169,17 +161,17 @@ function dikg_setup_fields() {
 			'default' 			=> $enable_material,
 		],
 		[
-			'uid' 				=> 'load_locally',
-			'label'	 			=> 'Use local version(s)',
+			'uid' 				=> 'load_external_cdn',
+			'label'	 			=> 'Load from an external CDN',
 			'section' 			=> 'divi_icon_king_settings',
 			'type' 				=> 'checkbox',
 			'is_toggle'			=> true,
 			'options' 			=> false,
 			'placeholder' 		=> '',
 			'helper' 			=> '',
-			'tooltip'			=> 'If you want to load versions of the icons locally from your server instead of loading them remotely from their CDNs, check this box.',
+			'tooltip'			=> 'Choose if you want to load icon fonts from your own server or from a third-party host.',
 			'supplemental'		=> '',
-			'default' 			=> $load_locally,
+			'default' 			=> $load_external_cdn,
 		],
 	];
 
@@ -249,43 +241,45 @@ function dikg_field_callback($arguments) {
 function dikg_plugin_style() {
 	$settings = get_option(DIKG_OPTIONS_NAME);
 
-	$enable_fontawesome = isset($settings['enable_fontawesome']) ? trim($settings['enable_fontawesome']) : false;
-	$enable_material	= isset($settings['enable_material']) ? trim($settings['enable_material']) : false;
-	$load_locally 		= isset($settings['load_locally']) ? trim($settings['load_locally']) : false;
+	$enable_fontawesome = !empty($settings['enable_fontawesome']);
+	$enable_material = !empty($settings['enable_material']);
+	$load_external_cdn = !empty($settings['load_external_cdn']);
+
+	$dir_url = plugin_dir_url(__FILE__);
 
 	if ($enable_fontawesome) {
-		if (isset($load_locally) && $load_locally) {
-			wp_enqueue_style(DIKG_PLUGIN_SLUG . '-fontawesome', plugin_dir_url(__FILE__) . 'vendor/font-awesome/css/font-awesome.min.css', [], DIKG_VERSION, 'all');
+		if ($load_external_cdn) {
+			wp_enqueue_style(DIKG_PLUGIN_SLUG . '-fontawesome', DIKG_FONTAWESOME_URL, [], null);
 		} else {
-			wp_enqueue_style(DIKG_PLUGIN_SLUG . '-fontawesome', DIKG_FONTAWESOME_URL, [], DIKG_VERSION, 'all');
+			wp_enqueue_style(DIKG_PLUGIN_SLUG . '-fontawesome', $dir_url . 'vendor/font-awesome/css/font-awesome.min.css', [], DIKG_VERSION);
 		}
 	}
 
 	if ($enable_material) {
-		if (isset($load_locally) && $load_locally) {
-			wp_enqueue_style(DIKG_PLUGIN_SLUG . '-material', plugin_dir_url(__FILE__) . 'vendor/material/iconfont/material-icons.css', [], DIKG_VERSION, 'all');
+		if ($load_external_cdn) {
+			wp_enqueue_style(DIKG_PLUGIN_SLUG . '-material', DIKG_MATERIAL_URL, [], null);
 		} else {
-			wp_enqueue_style(DIKG_PLUGIN_SLUG . '-material', DIKG_MATERIAL_URL, [], DIKG_VERSION, 'all');
+			wp_enqueue_style(DIKG_PLUGIN_SLUG . '-material', $dir_url . 'vendor/material/iconfont/material-icons.css', [], DIKG_VERSION);
 		}
 	}
 
 	// Load our custom stylesheet
-	wp_enqueue_style(DIKG_PLUGIN_SLUG . '-custom', plugin_dir_url(__FILE__) . 'assets/' . DIKG_PLUGIN_SLUG . '.css', [], DIKG_VERSION, 'all');
+	wp_enqueue_style(DIKG_PLUGIN_SLUG . '-custom', $dir_url . 'assets/' . DIKG_PLUGIN_SLUG . '.css', [], DIKG_VERSION);
 
 	if (is_user_logged_in()) {
-		wp_enqueue_script(DIKG_PLUGIN_SLUG . '-icon-filter', plugin_dir_url(__FILE__) . 'assets/divi-icon-king-gtm-icon-search.js', ['jquery'], DIKG_VERSION, true);
-		wp_enqueue_style(DIKG_PLUGIN_SLUG . '-icon-filter', plugin_dir_url(__FILE__) . 'assets/divi-icon-king-gtm-icon-search.css', [], DIKG_VERSION, 'all');
+		wp_enqueue_script(DIKG_PLUGIN_SLUG . '-icon-filter', $dir_url . 'assets/divi-icon-king-gtm-icon-search.js', ['jquery'], DIKG_VERSION, true);
+		wp_enqueue_style(DIKG_PLUGIN_SLUG . '-icon-filter', $dir_url . 'assets/divi-icon-king-gtm-icon-search.css', [], DIKG_VERSION);
 	}
 
-	wp_enqueue_script(DIKG_PLUGIN_SLUG . '-script', plugin_dir_url(__FILE__) . 'assets/' . DIKG_PLUGIN_SLUG . '.js', [], DIKG_VERSION . time(), true);
-	add_filter('script_loader_tag', 'dikg_no_rocketscript', 10, 3); // No RocketScript
+	wp_enqueue_script(DIKG_PLUGIN_SLUG . '-script', $dir_url . 'assets/' . DIKG_PLUGIN_SLUG . '.js', [], DIKG_VERSION, true);
+	add_filter('script_loader_tag', 'dikg_no_rocketscript', 10, 3);
 }
 
 function dikg_iconsplosion() {
 	$settings = get_option(DIKG_OPTIONS_NAME);
 
-	$enable_fontawesome = isset($settings['enable_fontawesome']) ? trim($settings['enable_fontawesome']) : false;
-	$enable_material	= isset($settings['enable_material']) ? trim($settings['enable_material']) : false;
+	$enable_fontawesome = !empty($settings['enable_fontawesome']);
+	$enable_material = !empty($settings['enable_material']);
 
 	// Add new structured ET icons to the divi builder so we can filter them.
 	add_filter('et_pb_font_icon_symbols', 'dikg_et_icons', 20);
@@ -428,7 +422,7 @@ if (! function_exists('et_pb_get_font_icon_list_items')) {
  * Overwrites the same function in Divi's functions.php file.
  * Handles icon output on the front end.
  */
-if (! function_exists('et_pb_process_font_icon')) {
+if (!function_exists('et_pb_process_font_icon')) {
 	function et_pb_process_font_icon($font_icon, $symbols_function = 'default') {
 		// the exact font icon value is saved
 		if (1 !== preg_match("/^%%/", trim($font_icon))) {
@@ -460,7 +454,7 @@ function dikg_front_icon_filter($font_icon) {
  */
 function dikg_no_rocketscript($tag, $handle, $src) {
 	if (DIKG_PLUGIN_SLUG . '-script' === $handle) {
-		$tag = '<script data-cfasync="false" src="' . esc_url($src) . '" ></script>';
+		$tag = '<script data-cfasync="false" src="' . esc_url($src) . '"></script>';
 	}
 	return $tag;
 }

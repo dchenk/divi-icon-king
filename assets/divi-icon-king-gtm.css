@@ -1,10 +1,10 @@
 .hide_icon,
 .hide_icon::before,
 .hide_icon::after {
-	opacity:0!important;
+	opacity: 0!important;
 }
 
-/* ==== FONT AWESOME ICONS ==== */
+/* ==== FONT AWESOME ==== */
 
 /* Older Divi  */
 body .divi_font-awesome_icon_gtm::before,
@@ -19,19 +19,19 @@ body.et-db.divi-icon-king #et-boc .et-fb-font-icon-list li.divi-icon-king-gtm--f
 body.et-db.divi-icon-king #et-boc .et-fb-font-icon-list li.divi-icon-king-gtm--font-awesome::after,
 body.divi-icon-king .et_font_icon li.divi-icon-king-gtm--font-awesome::before,
 body.divi-icon-king .et_font_icon li.divi-icon-king-gtm--font-awesome::after {
-	font-family: 'FontAwesome' !important
+	font-family: 'FontAwesome' !important;
 }
 .et_font_icon li.gtm-divi-king-icon--font-awesome {
 	font-size:16px;
 	text-align: center;
 	width: 1em;
 	padding: 10px;
-    display: inline-block;
-    text-rendering: auto;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;}
+	display: inline-block;
+	text-rendering: auto;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;}
 
-/* ==== MATERIAL DESIGN ICONS ==== */
+/* ==== MATERIAL DESIGN ==== */
 
 /* Older Divi  */
 body .divi_material_icon_gtm::before,
@@ -49,7 +49,7 @@ body.divi-icon-king .et_font_icon li.divi-icon-king-gtm--material::after {
 	font-family: 'Material Icons' !important
 }
 
-/* ==== ELEGANT THEMES ICONS ==== */
+/* ==== ELEGANT THEMES ==== */
 
 /* Older Divi */
 body #page-container #et-boc .divi_elegant-themes_icon_gtm::before,
@@ -68,9 +68,9 @@ body.divi-icon-king .et_font_icon li.divi-icon-king-gtm--elegant-themes::after {
 }
 
 .dikg_icon_filter {
-    display:inline-block;
-    padding: 3px;
-    transition: all ease .3s}
+	display:inline-block;
+	padding: 3px;
+	transition: all ease .3s}
 
 .dikg_icon_filter--closed {display:inline-block}
 .dikg_icon_filter--open,
@@ -78,19 +78,19 @@ body.divi-icon-king .et_font_icon li.divi-icon-king-gtm--elegant-themes::after {
 .dikg_icon_filter--hidden {display:none !important}
 
 .dikg_icon_filter__control_option {
-    padding: 3px 5px;
-    border: 1px solid;
-    border-color: transparent;
-    border-radius: 3px;
-    transition: all ease .4s}
+	padding: 3px 5px;
+	border: 1px solid;
+	border-color: transparent;
+	border-radius: 3px;
+	transition: all ease .4s}
 
 .dikg_icon_filter__control_option--active {border-color: #6c36b6;color:#6c36b6;}
 
 .dikg_icon_filter__btn {
 	border: 1px solid;
 	border-color: #eaeaea;
-    border-radius: 3px}
-    
+	border-radius: 3px}
+
 .dikg_icon_filter__btn,
 .dikg_icon_filter__controls {
 	color: #A0A9B2;
@@ -103,12 +103,14 @@ body.divi-icon-king .et_font_icon li.divi-icon-king-gtm--elegant-themes::after {
 	font-size: 1.1em;
 	font-style: normal;
 	padding-right: 10px;
-	vertical-align: middle}
+	vertical-align: middle;
+}
 
 .dikg_icon_filter__input {
-    display: block;
-    width:100%;
-    padding: 6px 12px;}
+	display: block;
+	width:100%;
+	padding: 6px 12px;
+}
 
 .dikg_icon_filter__input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
 	color: #A0A9B2;
@@ -132,23 +134,17 @@ body.divi-icon-king .et_font_icon li.divi-icon-king-gtm--elegant-themes::after {
 	margin-top: 10px;
 	padding: 10px 0;
 	border-top: 1px solid #eaeaea}
-	
+
 .dikg_icon_filter__control_option {padding: 3px 6px}
 .dikg_icon_filter__control_option:hover {cursor:pointer !important}
 
 .dikg_settings_box {
 	background: #fff;
-    padding: 10px 15px;
-    border-right: 2px solid #e5e5e5;
-    border-bottom: 2px solid #e5e5e5;}
+	padding: 10px 15px;
+	border-right: 2px solid #e5e5e5;
+	border-bottom: 2px solid #e5e5e5;}
 
 .dikg_settings_box_label_icon::before {padding-right: 10px;color:#ccc}
 .dikg_settings_box_label_icon--unlocked::before {color:#1abc9c}
 
 .dikg_settings_box input[type="text"] {width:25em}
-
-.dikg_credits {
-	display: block;
-	text-align: center;
-	color: #888;
-	font-size: 0.9em}
