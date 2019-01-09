@@ -21,8 +21,8 @@ define('DIKG_FONTAWESOME_URL', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7
 define('DIKG_MATERIAL_URL', 'https://fonts.googleapis.com/icon?family=Material+Icons');
 
 define('DIKG_OPTIONS_NAME', 'dikg_settings');
-define('DIKG_PLUGIN_SLUG', 'divi-icon-king-gtm');
-define('DIKG_SETTINGS', 'divi_icon_king_gtm_settings');
+define('DIKG_PLUGIN_SLUG', 'divi-icon-king');
+define('DIKG_SETTINGS', 'divi_icon_king_settings');
 
 add_filter('plugin_action_links', 'dikg_add_action_plugin', 10, 5);
 add_filter('dikg_filter_front_icon', 'dikg_front_icon_filter');
@@ -48,8 +48,8 @@ function dikg_custom_public_class($classes) {
 	return $classes;
 }
 
-function dikg_custom_admin_class($classes) {
-	$classes .= 'divi-icon-king';
+function dikg_custom_admin_class(string $classes) {
+	$classes .= ' divi-icon-king';
 	return $classes;
 }
 
@@ -78,7 +78,7 @@ function dikg_add_action_plugin($actions, $plugin_file) {
  */
 function dikg_admin_style($hook) {
 	if ($hook === 'settings_page_' . DIKG_SETTINGS) {
-		wp_enqueue_style(DIKG_PLUGIN_SLUG . 'admin', plugin_dir_url(__FILE__) . 'assets/' . DIKG_PLUGIN_SLUG . '-admin.css', [], DIKG_VERSION);
+		wp_enqueue_style(DIKG_PLUGIN_SLUG . 'admin', plugin_dir_url(__FILE__) . 'assets/divi-icon-king-admin.css', [], DIKG_VERSION);
 	}
 }
 
@@ -194,10 +194,10 @@ function dikg_field_callback($arguments) {
 	// Check which type of field we want.
 	switch ($arguments['type']) {
 	case 'checkbox':
-		if (isset($arguments['is_toggle']) && $arguments['is_toggle']) {
-			printf('<input name="%4$s[%1$s]" id="%1$s" type="%2$s" class="tgl tgl-flat" %3$s /><label class="tgl-btn" for="%1$s"></label>', $arguments['uid'], $arguments['type'], (($value == 'on') ? 'checked' : ''), $option_name);
+		if (!empty($arguments['is_toggle'])) {
+			printf('<input name="%4$s[%1$s]" id="%1$s" type="%2$s" %3$s><label class="tgl-btn" for="%1$s"></label>', $arguments['uid'], $arguments['type'], (($value == 'on') ? 'checked' : ''), $option_name);
 		} else {
-			printf('<input name="%4$s[%1$s]" id="%1$s" type="%2$s" %3$s />', $arguments['uid'], $arguments['type'], (($value == 'on') ? 'checked' : ''), $option_name);
+			printf('<input name="%4$s[%1$s]" id="%1$s" type="%2$s" %3$s>', $arguments['uid'], $arguments['type'], (($value == 'on') ? 'checked' : ''), $option_name);
 		}
 		break;
 	case 'text':

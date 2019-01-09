@@ -1,7 +1,7 @@
 .hide_icon,
 .hide_icon::before,
 .hide_icon::after {
-	opacity: 0!important;
+	opacity: 0 !important;
 }
 
 /* ==== FONT AWESOME ==== */
@@ -64,13 +64,14 @@ body.et-db.divi-icon-king #et-boc .et-fb-font-icon-list li.divi-icon-king-gtm--e
 body.et-db.divi-icon-king #et-boc .et-fb-font-icon-list li.divi-icon-king-gtm--elegant-themes::after,
 body.divi-icon-king .et_font_icon li.divi-icon-king-gtm--elegant-themes::before,
 body.divi-icon-king .et_font_icon li.divi-icon-king-gtm--elegant-themes::after {
-	font-family: 'ETModules' !important
+	font-family: 'ETModules' !important;
 }
 
 .dikg_icon_filter {
 	display:inline-block;
 	padding: 3px;
-	transition: all ease .3s}
+	transition: all ease .3s;
+}
 
 .dikg_icon_filter--closed {display:inline-block}
 .dikg_icon_filter--open,
@@ -122,29 +123,41 @@ body.divi-icon-king .et_font_icon li.divi-icon-king-gtm--elegant-themes::after {
 .dikg_icon_filter__input::-moz-placeholder { /* Mozilla Firefox 19+ */
    color: #A0A9B2;
    opacity: 1;
-   font-style: italic}
-.dikg_icon_filter__input:-ms-input-placeholder { /* Internet Explorer 10-11 */
-   color: #A0A9B2;
-   font-style: italic}
+   font-style: italic;
+}
 .dikg_icon_filter__input::-ms-input-placeholder { /* Microsoft Edge */
    color: #A0A9B2;
-   font-style: italic}
+   font-style: italic;
+}
 
 .dikg_icon_filter__controls {
 	margin-top: 10px;
 	padding: 10px 0;
-	border-top: 1px solid #eaeaea}
+	border-top: 1px solid #eaeaea;
+}
 
-.dikg_icon_filter__control_option {padding: 3px 6px}
-.dikg_icon_filter__control_option:hover {cursor:pointer !important}
+.dikg_icon_filter__control_option {
+	padding: 3px 6px;
+}
+.dikg_icon_filter__control_option:hover {
+	cursor: pointer !important;
+}
 
 .dikg_settings_box {
 	background: #fff;
 	padding: 10px 15px;
 	border-right: 2px solid #e5e5e5;
-	border-bottom: 2px solid #e5e5e5;}
+	border-bottom: 2px solid #e5e5e5;
+}
 
-.dikg_settings_box_label_icon::before {padding-right: 10px;color:#ccc}
-.dikg_settings_box_label_icon--unlocked::before {color:#1abc9c}
+.dikg_settings_box_label_icon::before {
+	padding-right: 10px;
+	color: #ccc;
+}
+.dikg_settings_box_label_icon--unlocked::before {
+	color: #1abc9c;
+}
 
-.dikg_settings_box input[type="text"] {width:25em}
+.dikg_settings_box input[type="text"] {
+	width: 25em;
+}

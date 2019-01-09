@@ -1,12 +1,12 @@
 (function( $ ) {
 
-	var module_list = [
+	const module_list = [
 		'.et_overlay',
 		'.et_pb_button',
 		'.et_pb_custom_button_icon',
 		'.et_pb_more_button',
 		'.et_pb_extra_overlay',
-    '.et-pb-icon',
+		'.et-pb-icon',
 		'.et_pb_shop',
 		'.et_pb_dmb_breadcrumbs li[data-icon]',
 		'.et_pb_dmb_breadcrumbs a[data-icon]',
@@ -23,21 +23,20 @@
 		'.et-fb-form__toggle[data-name="overlay"]',
 	];
 
-  var icon_filters =
-  '<div class="dikg_icon_filter dikg_icon_filter--closed">' +
-    '<span class="dikg_icon_filter__btn dikg_icon_filter--visible">Filter Icons</span>' +
-    '<div class="dikg_icon_filter__controls dikg_icon_filter--hidden">' +
-      '<span class="dikg_icon_filter__control_option dikg_icon_filter__control_option--inactive dikg_icon_filter__control_action dikg_icon_filter__all">All</span>' +
-      '<span class="dikg_icon_filter__control_option dikg_icon_filter__control_option--inactive dikg_icon_filter__control_action dikg_icon_filter__close">Close</span>' +
-    '</div>' +
-  '</div>';
+	const icon_filters = '<div class="dikg_icon_filter dikg_icon_filter--closed">' +
+		'<span class="dikg_icon_filter__btn dikg_icon_filter--visible">Filter Icons</span>' +
+		'<div class="dikg_icon_filter__controls dikg_icon_filter--hidden">' +
+			'<span class="dikg_icon_filter__control_option dikg_icon_filter__control_option--inactive dikg_icon_filter__control_action dikg_icon_filter__all">All</span>' +
+			'<span class="dikg_icon_filter__control_option dikg_icon_filter__control_option--inactive dikg_icon_filter__control_action dikg_icon_filter__close">Close</span>' +
+		'</div>' +
+	'</div>';
 
-  var targetClasses          = module_list.join();
+	var targetClasses          = module_list.join();
 	var icon_font_list         = '.et-fb-font-icon-list';
 	var builder_frame_selector = 'et-fb-app-frame';
 	icon_list_toggles          = icon_list_toggles.join();
 
-  $(function(){
+	$(function(){
 
 		hide_icons_dikg();
 
@@ -66,8 +65,8 @@
 							target.classList.contains('et_pb_row') 		||
 							target.classList.contains('et_pb_column')
 						) {
-              process_icons_dikg();
-              show_icons_dikg();
+			  process_icons_dikg();
+			  show_icons_dikg();
 						}
 
 						if ( thisMutation.addedNodes.length > 0 ) {
@@ -80,8 +79,8 @@
 								// Older versions of Divi.
 								target.classList.contains('et-fb-form__toggle')
 							) {
-                process_fb_icon_list_dikg();
-                add_filters_dikg();
+				process_fb_icon_list_dikg();
+				add_filters_dikg();
 							}
 						}
 					}
@@ -118,23 +117,20 @@
 	});
 
 	// Refresh icons on Woocommerce cart update.
-	$( document.body ).on( 'updated_cart_totals', function(){
+	$(document.body).on('updated_cart_totals', function() {
 		hide_icons_dikg();
 		setTimeout(function(){
-			process_fb_icon_list_dikg();
-      process_icons_dikg();
-      show_icons_dikg();
+		process_fb_icon_list_dikg();
+		process_icons_dikg();
+		show_icons_dikg();
 		}, 100);
 	});
 
 	/**
 	 * Detect if the FB is active.
-	 *
-	 * @since    1.1.0
 	 */
 	function et_fb_check() {
-    	if( $( '#et-fb-app' ).length ) {return true;}
-    	return false;
+    	return $("#et-fb-app").length > 0;
 	}
 
 	function hide_icons_dikg() {
@@ -159,8 +155,6 @@
 
 	/**
 	 * Parse icon data and display icons on the front end.
-	 *
-	 * @since    1.4.0
 	 */
 	function process_icons_dikg() {
 
@@ -293,4 +287,4 @@
       });
     }
   }
-})( jQuery );
+})(jQuery);
