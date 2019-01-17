@@ -43,14 +43,13 @@ add_action('admin_enqueue_scripts', 'dikg_plugin_style');
 
 add_action('wp_enqueue_scripts', 'dikg_plugin_style');
 
-function dikg_custom_public_class($classes) {
+function dikg_custom_public_class(array $classes) {
 	$classes[] = 'divi-icon-king';
 	return $classes;
 }
 
 function dikg_custom_admin_class(string $classes) {
-	$classes .= ' divi-icon-king';
-	return $classes;
+	return $classes . ' divi-icon-king';
 }
 
 /**
